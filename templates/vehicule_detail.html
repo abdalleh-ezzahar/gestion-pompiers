@@ -1,0 +1,77 @@
+{% extends 'core/base.html' %}
+{% block title %}{{ vehicule.code_radio }} – RescueTrack{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4 class="mb-0"><i class="bi bi-truck me-2"></i>{{ vehicule.code_radio }} – {{ vehicule.immatriculation }}</h4>
+  <div>
+    <a href="{% url 'vehicule_edit' vehicule.pk %}" class="btn btn-sm btn-outline-light me-2">
+      <i class="bi bi-pencil me-1"></i>Modifier
+    </a>
+    <a href="{% url 'vehicule_list' %}" class="btn btn-sm btn-outline-secondary">Retour</a>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header"><strong>Fiche véhicule</strong></div>
+      <div class="card-body">
+        <table class="table table-sm mb-0">
+          <tr><th>Marque</th><td>{{ vehicule.marque }}</td></tr>
+          <tr><th>Type de véhicule</th><td>{{ vehicule.get_type_vehicule_display }}</td></tr>
+          <tr><th>Immatriculation</th><td>{{ vehicule.immatriculation }}</td></tr>
+          <tr><th>Statut</th><td><span class="badge {{ vehicule.badge_class }}">{{ vehicule.badge_label }}</span></td></tr>
+          <tr><th>Kilométrage</th><td>{{ vehicule.km }} km</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between">
+        <strong>Matériels embarqués</strong>
+        <a href="{% url 'materiel_create' %}" class="btn btn-sm btn-outline-secondary">+ Ajouter</a>
+      </div>
+      <div class="card-body p-0">
+        <table class="table table-sm mb-0">
+          <thead><tr><th>Matériel</th><th>Qté</th><th>Révision</th></tr></thead>
+          <tbody>
+            {% for m in materiels %}
+            <tr>
+              <td>{{ m.nom }}</td>
+              <td>{{ m.quantite }}</td>
+              <td>{{ m.date_revision|date:"d/m/Y"|default:"—" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-center text-muted py-2">Aucun matériel</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><strong>Historique des interventions</strong></div>
+  <div class="card-body p-0">
+    <table class="table table-sm mb-0">
+      <thead class="table-dark">
+        <tr><th>N° Rapport</th><th>Type</th><th>Adresse</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        {% for inter in interventions %}
+        <tr>
+          <td><a href="{% url 'intervention_detail' inter.pk %}">{{ inter.numero_rapport }}</a></td>
+          <td><span class="badge {{ inter.badge_class }}">{{ inter.get_type_sinistre_display }}</span></td>
+          <td>{{ inter.adresse }}</td>
+          <td>{{ inter.date_appel|date:"d/m/Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted py-2">Aucune intervention</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

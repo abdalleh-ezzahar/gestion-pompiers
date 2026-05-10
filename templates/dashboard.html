@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %}
+{% block title %}Tableau de bord – RescueTrack{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h4 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>Tableau de bord opérationnel</h4>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Total véhicules</div>
+      <div class="fs-2 fw-bold">{{ total_vehicules }}</div>
+      <i class="bi bi-truck text-secondary"></i>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card p-3" style="border-left:4px solid #198754;">
+      <div class="text-muted small">Disponibles</div>
+      <div class="fs-2 fw-bold text-success">{{ dispo }}</div>
+      <i class="bi bi-check-circle text-success"></i>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card p-3" style="border-left:4px solid #dc3545;">
+      <div class="text-muted small">En intervention</div>
+      <div class="fs-2 fw-bold text-danger">{{ en_inter }}</div>
+      <i class="bi bi-fire text-danger"></i>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card p-3" style="border-left:4px solid #ffc107;">
+      <div class="text-muted small">En maintenance</div>
+      <div class="fs-2 fw-bold text-warning">{{ maintenance }}</div>
+      <i class="bi bi-wrench text-warning"></i>
+    </div>
+  </div>
+</div>
+
+<!-- Actions rapides -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <a href="{% url 'intervention_create' %}" class="btn btn-danger-rt w-100 py-3">
+      <i class="bi bi-plus-circle me-2"></i>Nouvelle intervention
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a href="{% url 'vehicule_create' %}" class="btn btn-outline-secondary w-100 py-3">
+      <i class="bi bi-truck me-2"></i>Ajouter un véhicule
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a href="{% url 'materiel_create' %}" class="btn btn-outline-secondary w-100 py-3">
+      <i class="bi bi-tools me-2"></i>Ajouter du matériel
+    </a>
+  </div>
+</div>
+
+<!-- Dernières interventions -->
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center" style="background:#2c2c2c; color:#eee;">
+    <span><i class="bi bi-clock-history me-2"></i>Dernières interventions</span>
+    <a href="{% url 'intervention_list' %}" class="btn btn-sm btn-outline-light">Voir tout</a>
+  </div>
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>N° Rapport</th><th>Type</th><th>Adresse</th><th>Date</th><th>Véhicules</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inter in dernieres_interventions %}
+        <tr>
+          <td><a href="{% url 'intervention_detail' inter.pk %}">{{ inter.numero_rapport }}</a></td>
+          <td><span class="badge {{ inter.badge_class }}">{{ inter.get_type_sinistre_display }}</span></td>
+          <td>{{ inter.adresse }}</td>
+          <td>{{ inter.date_appel|date:"d/m/Y H:i" }}</td>
+          <td>{{ inter.vehicules.count }} engin(s)</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-center text-muted py-3">Aucune intervention enregistrée</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

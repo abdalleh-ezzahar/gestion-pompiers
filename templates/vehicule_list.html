@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+{% block title %}Véhicules – RescueTrack{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4 class="mb-0"><i class="bi bi-truck me-2"></i>Inventaire des véhicules</h4>
+  <a href="{% url 'vehicule_create' %}" class="btn btn-danger-rt btn-sm">
+    <i class="bi bi-plus-lg me-1"></i>Ajouter
+  </a>
+</div>
+
+<!-- Filtres -->
+<div class="card mb-3">
+  <div class="card-body py-2">
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label mb-1 small">Type de véhicule</label>
+        {{ form.type_vehicule }}
+      </div>
+      <div class="col-md-4">
+        <label class="form-label mb-1 small">Statut</label>
+        {{ form.statut }}
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-secondary w-100"><i class="bi bi-funnel me-1"></i>Filtrer</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Code radio</th><th>Immatriculation</th><th>Type</th><th>Statut</th><th>Kilométrage</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for v in vehicules %}
+        <tr>
+          <td><a href="{% url 'vehicule_detail' v.pk %}"><strong>{{ v.code_radio }}</strong></a></td>
+          <td>{{ v.immatriculation }}</td>
+          <td>{{ v.type_vehicule }}</td>
+          <td><span class="badge {{ v.badge_class }}">{{ v.badge_label }}</span></td>
+          <td>{{ v.km|floatformat:0 }} km</td>
+          <td>
+            <a href="{% url 'vehicule_edit' v.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+            <a href="{% url 'vehicule_delete' v.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">Aucun véhicule trouvé.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

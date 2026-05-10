@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}RescueTrack{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --rt-red: #c0392b;
+      --rt-dark: #1a1a1a;
+      --rt-gray: #2c2c2c;
+    }
+    body { background: #f4f4f4; }
+    .navbar { background: var(--rt-dark) !important; border-bottom: 3px solid var(--rt-red); }
+    .navbar-brand { color: var(--rt-red) !important; font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+    .navbar-nav .nav-link { color: #ccc !important; }
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link.active { color: #fff !important; }
+    .sidebar { background: var(--rt-gray); min-height: calc(100vh - 60px); }
+    .sidebar .nav-link { color: #bbb; padding: 10px 16px; border-radius: 6px; margin: 2px 8px; }
+    .sidebar .nav-link:hover { background: rgba(192,57,43,0.2); color: #fff; }
+    .sidebar .nav-link.active { background: var(--rt-red); color: #fff !important; }
+    .sidebar .nav-link i { margin-right: 8px; }
+    .card { border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .stat-card { border-left: 4px solid var(--rt-red); }
+    .badge-disponible { background: #198754; }
+    .badge-en_intervention { background: #dc3545; }
+    .badge-indisponible { background: #ffc107; color: #000; }
+    .page-header { background: var(--rt-dark); color: white; padding: 14px 20px; border-radius: 8px;
+      border-left: 5px solid var(--rt-red); margin-bottom: 20px; }
+    .btn-danger-rt { background: var(--rt-red); border-color: var(--rt-red); color: white; }
+    .btn-danger-rt:hover { background: #a93226; border-color: #a93226; color: white; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'dashboard' %}">🚒 RescueTrack</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i> {{ user.get_full_name|default:user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            {% if user.is_staff %}
+            <li><a class="dropdown-item" href="/admin/"><i class="bi bi-gear"></i> Administration</a></li>
+            <li><hr class="dropdown-divider"></li>
+            {% endif %}
+            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i> Déconnexion</a></li>
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar py-3">
+      <nav class="nav flex-column">
+        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+           href="{% url 'dashboard' %}">
+          <i class="bi bi-speedometer2"></i> Tableau de bord
+        </a>
+        <hr class="border-secondary my-2 mx-2">
+        <small class="text-muted px-3 mb-1" style="font-size:.75rem;">FLOTTE</small>
+        <a class="nav-link {% if 'vehicule' in request.resolver_match.url_name %}active{% endif %}"
+           href="{% url 'vehicule_list' %}">
+          <i class="bi bi-truck"></i> Véhicules
+        </a>
+        <a class="nav-link {% if 'materiel' in request.resolver_match.url_name %}active{% endif %}"
+           href="{% url 'materiel_list' %}">
+          <i class="bi bi-tools"></i> Matériels
+        </a>
+        <hr class="border-secondary my-2 mx-2">
+        <small class="text-muted px-3 mb-1" style="font-size:.75rem;">OPÉRATIONS</small>
+        <a class="nav-link {% if 'intervention' in request.resolver_match.url_name %}active{% endif %}"
+           href="{% url 'intervention_list' %}">
+          <i class="bi bi-fire"></i> Interventions
+        </a>
+      </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-md-10 py-4 px-4">
+      {% for message in messages %}
+      <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endfor %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

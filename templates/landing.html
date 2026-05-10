@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RescueTrack – Gestion de Caserne</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --rt-red: #c0392b;
+      --rt-dark: #1a1a1a;
+      --rt-gray: #2c2c2c;
+    }
+    
+    body { background: #f4f4f4; }
+    
+    .navbar { background: var(--rt-dark) !important; border-bottom: 3px solid var(--rt-red); }
+    .navbar-brand { color: var(--rt-red) !important; font-weight: 800; font-size: 1.4rem; letter-spacing: 1px; }
+    .navbar-nav .nav-link { color: #ccc !important; }
+    .navbar-nav .nav-link:hover { color: #fff !important; }
+    
+    .hero {
+      background: linear-gradient(135deg, var(--rt-dark) 0%, var(--rt-gray) 100%);
+      color: white;
+      padding: 120px 20px;
+      text-align: center;
+      border-bottom: 4px solid var(--rt-red);
+    }
+    .hero h1 { font-size: 3rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 10px; }
+    .hero p { font-size: 1.3rem; color: #ccc; margin-bottom: 30px; }
+    .btn-primary-rt { background: var(--rt-red); border: none; color: white; font-weight: 600; padding: 12px 30px; }
+    .btn-primary-rt:hover { background: #a93226; color: white; }
+    
+    .features { padding: 80px 20px; }
+    .feature-card {
+      background: white;
+      border: none;
+      border-left: 4px solid var(--rt-red);
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 0.3s;
+    }
+    .feature-card:hover { transform: translateY(-5px); }
+    .feature-card i { font-size: 2.5rem; color: var(--rt-red); margin-bottom: 15px; }
+    .feature-card h5 { font-weight: 700; margin-bottom: 10px; }
+    
+    .about { background: var(--rt-dark); color: white; padding: 60px 20px; }
+    .about h3 { color: var(--rt-red); font-weight: 800; }
+    
+    footer { background: var(--rt-dark); color: #999; padding: 20px; text-align: center; border-top: 1px solid var(--rt-red); }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'landing' %}">🚒 RescueTrack</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-person-circle"></i> {{ user.username }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'dashboard' %}">Tableau de bord</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Déconnexion</a></li>
+          </ul>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i> Connexion</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'signup' %}"><i class="bi bi-person-plus"></i> S'inscrire</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>🚒 RescueTrack</h1>
+  <p>Système de gestion complet pour casernes de pompiers</p>
+  {% if not user.is_authenticated %}
+  <a href="{% url 'signup' %}" class="btn btn-primary-rt me-2">S'inscrire</a>
+  <a href="{% url 'login' %}" class="btn btn-outline-light">Se connecter</a>
+  {% else %}
+  <a href="{% url 'dashboard' %}" class="btn btn-primary-rt">Accéder au tableau de bord</a>
+  {% endif %}
+</div>
+
+<!-- Features -->
+<div class="features">
+  <div class="container">
+    <h2 class="text-center mb-5">Fonctionnalités principales</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="feature-card">
+          <i class="bi bi-truck"></i>
+          <h5>Gestion de flotte</h5>
+          <p>Suivez l'état et la disponibilité de tous vos véhicules en temps réel.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <i class="bi bi-fire"></i>
+          <h5>Interventions</h5>
+          <p>Enregistrez et suivi complet de chaque intervention et opération de secours.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card">
+          <i class="bi bi-tools"></i>
+          <h5>Matériels</h5>
+          <p>Gestion centralisée de tous les équipements et matériels de la caserne.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- About -->
+<div class="about">
+  <div class="container">
+    <h3>À propos</h3>
+    <p>RescueTrack est une solution complète conçue pour simplifier la gestion administrative des casernes de pompiers. 
+    Nos outils vous permettent de:</p>
+    <ul>
+      <li>✓ Gérer efficacement votre parc de véhicules</li>
+      <li>✓ Enregistrer et suivre les interventions</li>
+      <li>✓ Maintenir un inventaire du matériel à jour</li>
+      <li>✓ Améliorer la disponibilité opérationnelle</li>
+      <li>✓ Générer des rapports d'activité</li>
+    </ul>
+    <p class="mt-4"><strong>Conçu pour les pompiers, par des professionnels.</strong></p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 RescueTrack. Tous droits réservés.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

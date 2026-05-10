@@ -1,0 +1,31 @@
+{% extends 'core/base.html' %}
+{% block title %}Intervention {{ intervention.numero_rapport }} – RescueTrack{% endblock %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center">
+  <h4 class="mb-0">Intervention {{ intervention.numero_rapport }}</h4>
+  <a href="{% url 'intervention_list' %}" class="btn btn-sm btn-outline-secondary">Retour</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <table class="table table-sm mb-4">
+      <tr><th>Type</th><td><span class="badge {{ intervention.badge_class }}">{{ intervention.get_type_sinistre_display }}</span></td></tr>
+      <tr><th>Adresse</th><td>{{ intervention.adresse }}</td></tr>
+      <tr><th>Date</th><td>{{ intervention.date_appel|date:"d/m/Y H:i" }}</td></tr>
+      <tr><th>Durée</th><td>{{ intervention.duree }} min</td></tr>
+      <tr><th>Notes</th><td>{{ intervention.notes|default:'Aucune note' }}</td></tr>
+    </table>
+
+    <h5>Véhicules engagés</h5>
+    <ul class="list-group">
+      {% for v in intervention.vehicules.all %}
+      <li class="list-group-item">
+        <a href="{% url 'vehicule_detail' v.id %}">{{ v.code_radio }} – {{ v.immatriculation }}</a>
+      </li>
+      {% empty %}
+      <li class="list-group-item text-muted">Aucun véhicule associé.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
